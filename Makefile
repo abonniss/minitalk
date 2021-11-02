@@ -33,6 +33,7 @@ INCLUDES += includes/
 
 #PATH SOURCES 
 PATHSOURCES_LIBFT = srcs/libft/
+PATHSOURCES_MINITALK = srcs/minitalk/ 
 
 #SOURCES
 SRCS += ft_absolute.c
@@ -84,7 +85,8 @@ SRCS += state_machine.c
 SRCS += conv.c
 SRCS += conv_duixx.c
 
-
+SRCS_MINITALK += client.c
+SRCS_MINITALK += server.c
 
 
 #HEADERS
@@ -94,18 +96,17 @@ HEADERS += libftprintf.h
 #VPATH
 
 vpath %.c $(PATHSOURCES_LIBFT)
-vpath %.c $(PATHSOURCES_FTPRINTF)
+vpath %.c $(PATHSOURCES_MINITALK)
 vpath %.h $(INCLUDES)
 
 #OBJS
 
 PATHOBJS = objs/
-PATHOBJS_BONUS = objs_bonus/
+
 
 OBJS += $(patsubst %.c, $(PATHOBJS)%.o, $(SRCS))
-OBJS += $(patsubst %.c, $(PATHOBJS)%.o, $(SRCS_PRINTF))
-OBJS_BONUS += $(patsubst %.c, $(PATHOBJS_BONUS)%.o, $(SRCS))
-OBJS_BONUS += $(patsubst %.c, $(PATHOBJS_BONUS)%.o, $(SRCS_PRINTF_BONUS))
+OBJS += $(patsubst %.c, $(PATHOBJS)%.o, $(SRCS_MINITALK))
+
 
 #RULES 
 
@@ -116,9 +117,6 @@ $(NAME): $(PATHOBJS) $(OBJS)
 	printf "\033[32mCompilation OK\n\033[0m"
 
 $(OBJS): $(PATHOBJS)%.o: %.c $(HEADERS) Makefile 
-	$(CC) $(CFLAGS) -I $(INCLUDES) -c $< -o $@
-
-$(OBJS_BONUS): $(PATHOBJS_BONUS)%.o: %.c $(HEADERS) Makefile 
 	$(CC) $(CFLAGS) -I $(INCLUDES) -c $< -o $@
 
 $(PATHOBJS): 
