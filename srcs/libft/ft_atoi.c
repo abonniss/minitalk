@@ -6,7 +6,7 @@
 /*   By: abonniss <abonniss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 11:28:21 by abonniss          #+#    #+#             */
-/*   Updated: 2021/10/22 12:43:10 by abonniss         ###   ########.fr       */
+/*   Updated: 2021/11/02 09:55:33 by abonniss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static int	ft_isspace(char c)
 	return (0);
 }
 
-int	ft_atoi(const char *str)
+long	ft_atol(const char *str)
 {
 	int		signe;
 	long	number;
@@ -42,4 +42,29 @@ int	ft_atoi(const char *str)
 		str++;
 	}
 	return (number *= signe);
+}
+
+
+int	ft_atoi(const char *str)
+{
+	return (ft_atol(str));
+}
+
+int ft_satol(const char *str, long *nb)
+{
+	*nb = 0;
+	if (ft_isnumber(str) == false)
+		return (FAILURE);
+	*nb = ft_atol(str);
+	return (SUCCESS);
+}
+
+int ft_satoi(const char *str, int *nb)
+{
+	long lnb;
+	int ret; 
+	
+	ret = ft_satol(str, &lnb);
+	*nb = (int)lnb;
+	return (ret);
 }
