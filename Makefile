@@ -1,5 +1,6 @@
 #NAME
-NAME = libftprintf.a
+SERVER = server
+SERVER = server
 
 #COMPILER
 CC = clang
@@ -91,7 +92,7 @@ SRCS_MINITALK += server.c
 
 #HEADERS
 
-HEADERS += libftprintf.h
+HEADERS += libft.h
 
 #VPATH
 
