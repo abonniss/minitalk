@@ -6,7 +6,7 @@
 /*   By: abonniss <abonniss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 10:56:34 by abonniss          #+#    #+#             */
-/*   Updated: 2021/11/04 08:45:17 by abonniss         ###   ########.fr       */
+/*   Updated: 2021/11/06 15:36:42 by abonniss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include "libftprintf.h"
 #define CHAR_SIZE 8
 #define SHIFT_VALUE '0'
 #define NB_SIGS 2
@@ -39,7 +40,7 @@ static void	send_char(const int server_pid, const char c)
 		bit = (c >> i) & 0x01;
 		if (kill(server_pid, sig[bit]) == FAILURE)
 		{
-			dprintf(STDERR_FILENO1, "%s = %d\n", ERR_KILL, server_pid);
+			ft_dprintf(STDERR_FILENO, "%s = %d\n", ERR_KILL, server_pid);
 			exit(EXIT_FAILURE);
 		}
 		usleep(TIME_TO_WAIT);
@@ -57,16 +58,16 @@ static void	send_str(const int server_pid, const char * const str)
 		send_char(server_pid, str[i]);
 		++i;
 	}
-	print_bit(server_pid, END_OF_TRANSMISSION);
+	send_char(server_pid, END_OF_TRANSMISSION);
 }
 
 void		trigger_success(int sig)
 {
-	putendl(MSG_SUCCESS);
+	ft_putendl_fd(MSG_SUCCESS, STDOUT_FILENO);
 	exit(EXIT_SUCCESS);
 }
 
-static int		set_signals(void)
+static void		set_signals(void)
 {
 	signal(SIGUSR1, trigger_success);
 	signal(SIGUSR2, trigger_success);
@@ -77,16 +78,16 @@ int		main(int ac, char **av)
 	int server_pid;
 
 	if (ac != NB_ARGS || ft_satoi(av[1], &server_pid) == FAILURE)
-		dprintf(STDERR_FILENO, USAGE);
+		ft_putendl_fd(USAGE, STDERR_FILENO);
 	else
 	{
 		set_signals();
 		send_str(server_pid, av[2]);
-		putendl("Wait response from server...");	
+		ft_putendl_fd("Wait response from server...", STDOUT_FILENO);	
 		sleep(TIMEOUT);
-		putendl("Kill server...");
+		ft_putendl_fd("Kill server...", STDOUT_FILENO);
 		if (kill(server_pid, SIGKILL) == FAILURE)
-			dprintf(STDERR_FILENO1, "%s = %d\n", ERR_KILL, server_pid);
+			ft_dprintf(STDERR_FILENO, "%s = %d\n", ERR_KILL, server_pid);
 	}
 	return (EXIT_FAILURE);
 }

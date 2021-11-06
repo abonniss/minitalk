@@ -1,5 +1,5 @@
 #NAME
-SERVER = server
+CLIENT = client
 SERVER = server
 
 #COMPILER
@@ -30,125 +30,89 @@ endif
 DSYM += $(NAME).dSYM 
 
 #INCLUDES 
-INCLUDES += includes/
+INCLUDES += includes
 
-#PATH SOURCES 
-PATHSOURCES_LIBFT = srcs/libft/
-PATHSOURCES_MINITALK = srcs/minitalk/ 
+#LIB 
+PATH_LIB = libftprintf 
+LIB = $(PATH_LIB)/libftprintf.a
+INCLUDES_LIB = $(PATH_LIB)/includes
+LIB_NAME = ftprintf 
+
+#PATH_SOURCES 
+PATH_SRCS_CLIENT = srcs/client
+PATH_SRCS_SERVER = srcs/server
+
 
 #SOURCES
-SRCS += ft_absolute.c
-SRCS += ft_add_prefix.c
-SRCS += ft_atoi.c
-SRCS += ft_bzero.c
-SRCS += ft_calloc.c
-SRCS += ft_isalnum.c
-SRCS += ft_isalpha.c
-SRCS += ft_isascii.c
-SRCS += ft_isdigit.c
-SRCS += ft_isprint.c
-SRCS += ft_is_uppercase.c
-SRCS += ft_is_lowercase.c
-SRCS += ft_itoa.c
-SRCS += ft_memalloc.c
-SRCS += ft_memccpy.c
-SRCS += ft_memchr.c
-SRCS += ft_memcmp.c
-SRCS += ft_memcpy.c
-SRCS += ft_memmove.c
-SRCS += ft_memset.c
-SRCS += ft_putchar_fd.c
-SRCS += ft_putendl_fd.c
-SRCS += ft_putnbr_fd.c
-SRCS += ft_putstr_fd.c
-SRCS += ft_split.c
-SRCS += ft_strchr.c
-SRCS += ft_strcpy.c
-SRCS += ft_strdup.c
-SRCS += ft_strjoin.c
-SRCS += ft_strlcat.c
-SRCS += ft_strlcpy.c
-SRCS += ft_strlen.c
-SRCS += ft_strmapi.c
-SRCS += ft_strncmp.c
-SRCS += ft_strnstr.c
-SRCS += ft_strrchr.c
-SRCS += ft_strtrim.c
-SRCS += ft_substr.c
-SRCS += ft_to_lowercase.c
-SRCS += ft_to_uppercase.c
-SRCS += ft_str_to_uppercase.c
-SRCS += ft_str_to_lowercase.c
-SRCS += ft_printf.c
-SRCS += ft_ltoabase.c
-SRCS += manage_buffer.c
-SRCS += state_machine.c
-SRCS += conv.c
-SRCS += conv_duixx.c
-
-SRCS_MINITALK += client.c
-SRCS_MINITALK += server.c
+SRCS_CLIENT += client.c
+SRCS_SERVER += server.c
 
 
 #HEADERS
-
-HEADERS += libft.h
+HEADERS += minitalk.h
 
 #VPATH
-
-vpath %.c $(PATHSOURCES_LIBFT)
-vpath %.c $(PATHSOURCES_MINITALK)
+vpath %.c $(PATH_SRCS_CLIENT)
+vpath %.c $(PATH_SRCS_SERVER)
 vpath %.h $(INCLUDES)
 
 #OBJS
+PATH_OBJS = objs
+OBJS_CLIENT = $(patsubst %.c, $(PATH_OBJS)/%.o, $(SRCS_CLIENT))
+OBJS_SERVER = $(patsubst %.c, $(PATH_OBJS)/%.o, $(SRCS_SERVER))
 
-PATHOBJS = objs/
-
-
-OBJS += $(patsubst %.c, $(PATHOBJS)%.o, $(SRCS))
-OBJS += $(patsubst %.c, $(PATHOBJS)%.o, $(SRCS_MINITALK))
+#COLORS PRINT
+NC 		= \033[0m
+GREEN 	= \033[32m
+CYAN 	= \033[36m
+RED 	= \033[31m
+ONELINE = \e[1A\r
 
 
 #RULES 
 
-all: $(NAME)
+all: $(CLIENT) $(SERVER)
 
-$(NAME): $(PATHOBJS) $(OBJS)
-	ar rcs $@ $(OBJS) 
-	printf "\033[32mCompilation OK\n\033[0m"
+$(CLIENT): $(LIB) $(PATH_OBJS) $(OBJS_CLIENT)
+	#clang -Wall -Wextra -Werror objs/client.o -L libftprintf -l ftprintf -I includes -I libftprintf/includes -o client
+	$(CC) $(CFLAGS) $(OBJS_CLIENT) -L $(PATH_LIB) -l $(LIB_NAME) -I $(INCLUDES) -I $(INCLUDES_LIB) -o $@
+	printf "$(GREEN)$@ IS READY\n$(NC)"
 
-$(OBJS): $(PATHOBJS)%.o: %.c $(HEADERS) Makefile 
-	$(CC) $(CFLAGS) -I $(INCLUDES) -c $< -o $@
+$(SERVER): $(LIB) $(PATH_OBJS) $(OBJS_SERVER)
+	$(CC) $(CFLAGS) $(OBJS_SERVER) -L $(PATH_LIB) -l $(LIB_NAME) -I $(INCLUDES) -I $(INCLUDES_LIB) -o $@
+	printf "$(GREEN)$@ IS READY\n$(NC)"
 
-$(PATHOBJS): 
+$(LIB): FORCE
+	#make -C libftprintf 
+	$(MAKE) -C $(PATH_LIB) 
+
+FORCE: 
+	#permet de forcer la réalisationn de la lib
+
+$(OBJS_CLIENT): $(PATH_OBJS)/%.o: %.c $(HEADERS) Makefile
+	#clang -Wall -Werror -Wextra -I libftprintf/includes -I includes -c client.c -o objs/client.o
+	$(CC) $(CFLAGS) -I $(INCLUDES_LIB) -I $(INCLUDES) -c $< -o $@
+	printf "$(ONELINE)$(CYAN)$< IS COMPILING                                 \n$(NC)"
+
+$(OBJS_SERVER): $(PATH_OBJS)/%.o: %.c $(HEADERS) Makefile
+	$(CC) $(CFLAGS) -I $(INCLUDES_LIB) -I $(INCLUDES) -c $< -o $@
+	printf "$(ONELINE)$(CYAN)$< IS COMPILING                                 \n$(NC)"
+
+$(PATH_OBJS):
 	mkdir $@
 
-$(PATHOBJS_BONUS): 
-	mkdir $@
+clean:
+	$(RM) -R $(PATH_OBJS) $(DSYM)
+	printf "$(RED)IT'S CLEAN\n$(NC)"
 
-clean: 
-	$(RM) -R $(OBJS) $(OBJS_BONUS) $(PATHOBJS) $(PATHOBJS_BONUS) $(DSYM)
-	printf "Clean OK\n"
-
-fclean: clean 
-	$(RM) $(NAME)
+fclean: clean
+	$(RM) $(CLIENT) $(SERVER)
 	printf "fclean OK\n"
+	printf "$(RED) $(CLIENT) AND $(SERVER) REMOVED\n$(NC)"
 
 re: fclean
 	$(MAKE)
 
-bonus: $(PATHOBJS_BONUS) $(OBJS_BONUS)
-	ar rcs $(NAME) $(OBJS_BONUS) 
-	printf "\033[32mCompilation OK\n\033[0m"
+.PHONY: clean fclean re all FORCE 
 
-test: all 
-	$(CC) $(CFLAGS) -I $(INCLUDES) -L ./ -l ftprintf TestPF.c -o Tester
-	printf "\033[32mTest OK\n\033[0m"
-
-test_bonus: bonus
-	$(CC) $(CFLAGS) -I $(INCLUDES) -L ./ -l ftprintf TestPF.c -o Tester
-	printf "\033[32mTest OK\n\033[0m"
-
-.PHONY: clean fclean re all
-
-#.SILENT: 
+.SILENT: 
