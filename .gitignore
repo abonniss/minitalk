@@ -1,0 +1,8 @@
+server
+client
+objs
+*.o
+*.out
+.*.sw*
+*.dSYM
+

@@ -33,7 +33,7 @@ DSYM += $(NAME).dSYM
 INCLUDES += includes
 
 #LIB 
-PATH_LIB = libftprintf 
+PATH_LIB = libftprintf
 LIB = $(PATH_LIB)/libftprintf.a
 INCLUDES_LIB = $(PATH_LIB)/includes
 LIB_NAME = ftprintf 
@@ -92,11 +92,11 @@ FORCE:
 $(OBJS_CLIENT): $(PATH_OBJS)/%.o: %.c $(HEADERS) Makefile
 	#clang -Wall -Werror -Wextra -I libftprintf/includes -I includes -c client.c -o objs/client.o
 	$(CC) $(CFLAGS) -I $(INCLUDES_LIB) -I $(INCLUDES) -c $< -o $@
-	printf "$(ONELINE)$(CYAN)$< IS COMPILING                                 \n$(NC)"
+	printf "$(CYAN)$< IS COMPILING                                 \n$(NC)"
 
 $(OBJS_SERVER): $(PATH_OBJS)/%.o: %.c $(HEADERS) Makefile
 	$(CC) $(CFLAGS) -I $(INCLUDES_LIB) -I $(INCLUDES) -c $< -o $@
-	printf "$(ONELINE)$(CYAN)$< IS COMPILING                                 \n$(NC)"
+	printf "$(CYAN)$< IS COMPILING                                 \n$(NC)"
 
 $(PATH_OBJS):
 	mkdir $@
@@ -107,8 +107,7 @@ clean:
 
 fclean: clean
 	$(RM) $(CLIENT) $(SERVER)
-	printf "fclean OK\n"
-	printf "$(RED) $(CLIENT) AND $(SERVER) REMOVED\n$(NC)"
+	printf "$(RED)$(CLIENT) AND $(SERVER) REMOVED\n$(NC)"
 
 re: fclean
 	$(MAKE)

@@ -6,27 +6,11 @@
 /*   By: abonniss <abonniss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 10:56:34 by abonniss          #+#    #+#             */
-/*   Updated: 2021/11/06 15:36:42 by abonniss         ###   ########.fr       */
+/*   Updated: 2021/11/06 18:47:09 by abonniss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signal.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include "libftprintf.h"
-#define CHAR_SIZE 8
-#define SHIFT_VALUE '0'
-#define NB_SIGS 2
-#define FAILURE -1
-#define SUCCESS 0
-#define TIME_TO_WAIT 500
-#define END_OF_TRANSMISSION 0x04
-#define NB_ARGS 3
-#define USAGE "usage: ./client server_pid string_to_display\n"
-#define ERR_KILL "Something went wrong with pid"
-#define MSG_SUCCESS "SUCCESS - End of transmission"
-#define TIMEOUT 2
+#include "minitalk.h"
 
 static void	send_char(const int server_pid, const char c)
 {
@@ -63,6 +47,7 @@ static void	send_str(const int server_pid, const char * const str)
 
 void		trigger_success(int sig)
 {
+	(void)sig;
 	ft_putendl_fd(MSG_SUCCESS, STDOUT_FILENO);
 	exit(EXIT_SUCCESS);
 }
