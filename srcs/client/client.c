@@ -6,7 +6,7 @@
 /*   By: abonniss <abonniss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/22 10:56:34 by abonniss          #+#    #+#             */
-/*   Updated: 2021/11/06 18:47:09 by abonniss         ###   ########.fr       */
+/*   Updated: 2021/11/15 18:57:27 by abonniss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ static void	send_char(const int server_pid, const char c)
 	while (i < CHAR_SIZE)
 	{
 		bit = (c >> i) & 0x01;
+		ft_dprintf(STDERR_FILENO, "%d\n", i);
 		if (kill(server_pid, sig[bit]) == FAILURE)
 		{
 			ft_dprintf(STDERR_FILENO, "%s = %d\n", ERR_KILL, server_pid);
