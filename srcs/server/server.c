@@ -6,59 +6,44 @@
 /*   By: abonniss <abonniss@42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/13 17:20:31 by abonniss          #+#    #+#             */
-/*   Updated: 2021/11/16 18:44:59 by abonniss         ###   ########.fr       */
+/*   Updated: 2021/11/17 18:06:53 by abonniss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-typedef struct s_bufferm
+t_env 		env;
+
+
+static void reset_buffer(void)
 {
-	char c;
-	char str[10];
-	int buffer;
-}			t_bufferm;
-
-t_bufferm manage_buff;
-
-size_t bithandler_i = 0; 
-size_t addchar_i = 0;
-
-void add_char_str()
-{
-	addchar_i = 0;
-
-	manage_buff.str[addchar_i] = manage_buff.c;
-	++addchar_i;
-	ft_putendl_fd(manage_buff.str, 1);
+	ft_bzero(env.buffer->string, env.buffer->current_buffer_size);
+	env.buffer->current_buffer_size = 0;
 }
 
+static void process_byte(void)
+{
+	if (env.current_char == END_OF_TRANSMISSION)
+	{
+		ft_putendl_fd(env.buffer->string, STDOUT_FILENO);
+		reset_buffer();
+		kill(env.client_pid, SIGUSR1);
+	}
+	else 
+		push_char_into_str_manager(env.buffer, env.current_char);
+	env.bit_index = 0;
+	env.current_char = '\0';
+}
 
 void bit_handler(int sig, siginfo_t *info, void *ucontext)
 {
-	char str[10];
-
 	if (sig == SIGUSR1)
-	{	
-		(manage_buff.c << bithandler_i) & 0x01;
-		/*ft_putendl_fd("recu bit = 1", 1);*/
-		bithandler_i += 1;
-	}
-	else
-	{
-		bithandler_i += 1;
-		/*ft_putendl_fd("recu bit = 0", 1);*/
-	}
-	if (bithandler_i == 8)
-	{
-		add_char_str();
-		bithandler_i = 0;
-		manage_buff.c = '0';
-	}
-
+		env.current_char |= (0x01 << env.bit_index);
+	++env.bit_index;
+	env.client_pid = info->si_pid;
 }
 
-void define_signals()
+static void define_signals(void)
 {
 	struct sigaction act;
 
@@ -68,15 +53,22 @@ void define_signals()
 	sigaction(SIGUSR2, &act, NULL);
 }
 
-void loop_handler()
+static void loop_handler()
 {
-	while (true);
+	while (true)
+	{
+		pause();
+		if (env.bit_index == CHAR_SIZE)
+			process_byte();
+	}
 }
 
 int main(void)
-{
+{	
+	bzero(&env, sizeof(t_env));
+	env.buffer = create_struct_buffer();	
 	define_signals();
-	/*bzero(manage_buff)*/
 	loop_handler();
+	delete_struct_buffer(env.buffer);
 	return (0);
 }

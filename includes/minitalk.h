@@ -6,7 +6,7 @@
 /*   By: abonniss <abonniss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/06 18:42:30 by abonniss          #+#    #+#             */
-/*   Updated: 2021/11/06 18:48:30 by abonniss         ###   ########.fr       */
+/*   Updated: 2021/11/17 16:23:48 by abonniss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,14 @@
 # define ERR_KILL "Something went wrong with pid"
 # define MSG_SUCCESS "SUCCESS - End of transmission"
 # define TIMEOUT 2
+
+typedef struct	s_env
+{
+	size_t		bit_index;
+	char 		current_char;
+	int			client_pid;
+	t_buffer	*buffer;
+}				t_env;
 
 #endif
 
