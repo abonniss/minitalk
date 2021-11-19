@@ -102,14 +102,17 @@ $(PATH_OBJS):
 	mkdir $@
 
 clean:
+	$(MAKE) -C $(PATH_LIB) clean
 	$(RM) -R $(PATH_OBJS) $(DSYM)
 	printf "$(RED)IT'S CLEAN\n$(NC)"
 
 fclean: clean
+	$(MAKE) -C $(PATH_LIB) fclean
 	$(RM) $(CLIENT) $(SERVER)
 	printf "$(RED)$(CLIENT) AND $(SERVER) REMOVED\n$(NC)"
 
 re: fclean
+	$(MAKE) -C $(PATH_LIB) re
 	$(MAKE)
 
 .PHONY: clean fclean re all FORCE 
