@@ -6,15 +6,15 @@
 /*   By: abonniss <abonniss@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/06 18:42:30 by abonniss          #+#    #+#             */
-/*   Updated: 2021/11/17 16:23:48 by abonniss         ###   ########.fr       */
+/*   Updated: 2021/11/19 19:34:10 by abonniss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINITALK_H
 # define MINITALK_H
 
-#include <signal.h>
-#include "libftprintf.h"
+# include <signal.h>
+# include "libftprintf.h"
 # define CHAR_SIZE 8
 # define SHIFT_VALUE '0'
 # define NB_SIGS 2
@@ -28,13 +28,12 @@
 # define MSG_SUCCESS "SUCCESS - End of transmission"
 # define TIMEOUT 2
 
-typedef struct	s_env
+typedef struct s_env
 {
 	size_t		bit_index;
-	char 		current_char;
+	char		current_char;
 	int			client_pid;
 	t_buffer	*buffer;
 }				t_env;
 
 #endif
-
