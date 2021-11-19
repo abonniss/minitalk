@@ -6,7 +6,7 @@
 /*   By: abonniss <abonniss@42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/13 17:20:31 by abonniss          #+#    #+#             */
-/*   Updated: 2021/11/18 09:16:06 by abonniss         ###   ########.fr       */
+/*   Updated: 2021/11/19 12:34:01 by abonniss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void process_byte(void)
 		kill(env.client_pid, SIGUSR1);
 	}
 	else 
-		push_char_into_str_manager(env.buffer, env.current_char);
+		push_char_buffer(env.buffer, env.current_char);
 	env.bit_index = 0;
 	env.current_char = '\0';
 }
@@ -61,9 +61,9 @@ int main(void)
 {	
 	ft_printf("%d\n", getpid());
 	bzero(&env, sizeof(t_env));
-	env.buffer = create_struct_buffer();	
+	env.buffer = create_buffer();	
 	define_signals();
 	loop_handler();
-	delete_struct_buffer(env.buffer);
+	delete_buffer(env.buffer);
 	return (EXIT_SUCCESS);
 }
